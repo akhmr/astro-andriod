@@ -27,6 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.astro.composable.component.DateOfBirthPicker
+import com.astro.composable.component.GenderSelection
+import com.astro.composable.component.SubmitButton
+import com.astro.composable.component.UserInputField
 import com.astro.data.AstroResponse
 import com.astro.data.User
 import com.astro.model.AstroViewModel
@@ -37,36 +41,29 @@ import java.util.Calendar
 @Composable
 fun InitUi(viewModel: AstroViewModel) {
     // Temporary states for inputs
-    val tempUserName = remember { mutableStateOf("") }
-    var tempGender by remember { mutableStateOf("Male") }
-    var tempSelectedDate by remember { mutableStateOf("Select Date of Birth") }
+    val userName = remember { mutableStateOf("") }
+    var gender by remember { mutableStateOf("Male") }
+    var selectedDate by remember { mutableStateOf("Select Date of Birth") }
 
     // Submitted values
     var submittedName by remember { mutableStateOf("") }
     var submittedGender by remember { mutableStateOf("Male") }
     var submittedDateOfBirth by remember { mutableStateOf("Select Date of Birth") }
 
+    // Calendar initialization for date picker
     val calendar = Calendar.getInstance()
-    val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH)
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    val (year, month, day) = Triple(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
 
     val astroData by viewModel.astroData.collectAsState() //
-
     val coroutineScope = rememberCoroutineScope() // Manage coroutines in Compose
 
     val datePickerDialog = DatePickerDialog(
         LocalContext.current,
         { _, pickedYear, pickedMonth, pickedDay ->
-            // Format day and month with leading zero if necessary
-            tempSelectedDate = String.format("%02d/%02d/%d", pickedDay, pickedMonth + 1, pickedYear)
+            selectedDate = String.format("%02d/%02d/%d", pickedDay, pickedMonth + 1, pickedYear)
         },
         year, month, day
     )
-
-    // State to control display of selected values after submission
-    var showSummary by remember { mutableStateOf(false) }
-
     // Background Gradient
     val gradient = Brush.verticalGradient(
         colors = listOf(Cyan, LightGray, Yellow)
@@ -82,116 +79,30 @@ fun InitUi(viewModel: AstroViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Username input field
-        OutlinedTextField(
-            value = tempUserName.value,
-            onValueChange = {
-                tempUserName.value = it
-            },
-            leadingIcon = {
-                Icon(Icons.Default.Person, contentDescription = "person")
-            },
-            label = {
-                Text(text = "Name")
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-        )
+        UserInputField(userName.value) { userName.value = it }
+        GenderSelection(gender) { gender = it }
+        DateOfBirthPicker(selectedDate, datePickerDialog)
 
-        // Gender selection with text on the same row
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Text(text = "Gender: ", modifier = Modifier.padding(end = 8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(selected = tempGender == "Male", onClick = { tempGender = "Male" })
-                Text(text = "Male")
-            }
-            Spacer(modifier = Modifier.padding(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(selected = tempGender == "Female", onClick = { tempGender = "Female" })
-                Text(text = "Female")
+        SubmitButton {
+            coroutineScope.launch {
+                val user = User(userName.value, selectedDate)
+                viewModel.fetchAstroData(user)
             }
         }
-
-        // Row for DOB label and Date picker button with spacing
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
-        ) {
-            // DOB label
-            Text(text = "DOB: ", modifier = Modifier.padding(end = 8.dp))
-
-            Spacer(modifier = Modifier.padding(start = 40.dp)) // Adds space between DOB and Button
-
-            // Date picker for date of birth
-            Button(onClick = { datePickerDialog.show() }) {
-                Text(text = tempSelectedDate)
-            }
-        }
-
-        // Submit button
-        Button(
-            onClick = {
-                submittedName = tempUserName.value
-                submittedGender = tempGender
-                submittedDateOfBirth = tempSelectedDate
-                showSummary = true // Show the summary below upon button click
-
-                val user = User(submittedName,submittedDateOfBirth)
-                    // Trigger the API call when button is clicked
-                    coroutineScope.launch {
-                        viewModel.fetchAstroData(user)
-                    }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Submit")
-        }
-
-        // Display the selected values if the Submit button is clicked
-        if (showSummary) {
-            Spacer(modifier = Modifier.padding(16.dp)) // Adds spacing before the display
-            Text(
-                text = "Summary",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Black,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-           /* Text(text = "Name: $submittedName", fontSize = 18.sp, color = Black)
-            Text(text = "Gender: $submittedGender", fontSize = 18.sp, color = Black)
-            Text(text = "Date of Birth: $submittedDateOfBirth", fontSize = 18.sp, color = Black)*/
-
             // Display data from API
             astroData?.let { AstroDataComposable(it) }
         }
     }
-}
+
 
 @Composable
 fun AstroDataComposable(astroData: AstroResponse) {
 
-    if (astroData != null) {
-        Text(
-            text = astroData.data.toString(),
-            modifier = Modifier.padding(top = 20.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
-    } else {
-        Text(
-            text = "No data yet",
-            modifier = Modifier.padding(top = 20.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
-    }
+    Text(
+        text = astroData.data.toString(),
+        modifier = Modifier.padding(top = 20.dp),
+        style = MaterialTheme.typography.bodyMedium
+    )
 
 }
 
