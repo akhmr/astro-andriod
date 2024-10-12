@@ -1,5 +1,6 @@
 package com.astro
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -25,10 +27,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.astro.data.AstroResponse
+import com.astro.data.User
+import com.astro.model.AstroViewModel
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
+@SuppressLint("DefaultLocale")
 @Composable
-fun InitUi() {
+fun InitUi(viewModel: AstroViewModel) {
     // Temporary states for inputs
     val tempUserName = remember { mutableStateOf("") }
     var tempGender by remember { mutableStateOf("Male") }
@@ -43,6 +50,10 @@ fun InitUi() {
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
     val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val astroData by viewModel.astroData.collectAsState() //
+
+    val coroutineScope = rememberCoroutineScope() // Manage coroutines in Compose
 
     val datePickerDialog = DatePickerDialog(
         LocalContext.current,
@@ -133,6 +144,12 @@ fun InitUi() {
                 submittedGender = tempGender
                 submittedDateOfBirth = tempSelectedDate
                 showSummary = true // Show the summary below upon button click
+
+                val user = User(submittedName,submittedDateOfBirth)
+                    // Trigger the API call when button is clicked
+                    coroutineScope.launch {
+                        viewModel.fetchAstroData(user)
+                    }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -149,15 +166,38 @@ fun InitUi() {
                 color = Black,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            Text(text = "Name: $submittedName", fontSize = 18.sp, color = Black)
+           /* Text(text = "Name: $submittedName", fontSize = 18.sp, color = Black)
             Text(text = "Gender: $submittedGender", fontSize = 18.sp, color = Black)
-            Text(text = "Date of Birth: $submittedDateOfBirth", fontSize = 18.sp, color = Black)
+            Text(text = "Date of Birth: $submittedDateOfBirth", fontSize = 18.sp, color = Black)*/
+
+            // Display data from API
+            astroData?.let { AstroDataComposable(it) }
         }
     }
 }
 
 @Composable
+fun AstroDataComposable(astroData: AstroResponse) {
+
+    if (astroData != null) {
+        Text(
+            text = astroData.data.toString(),
+            modifier = Modifier.padding(top = 20.dp),
+            style = MaterialTheme.typography.bodyMedium
+        )
+    } else {
+        Text(
+            text = "No data yet",
+            modifier = Modifier.padding(top = 20.dp),
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+
+}
+
+/*@Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun InitUiPreview() {
-    InitUi()
+    InitUi(viewModel)
 }
+*/

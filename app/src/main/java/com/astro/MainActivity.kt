@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
@@ -24,9 +24,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.astro.model.AstroViewModel
 import com.astro.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: AstroViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -37,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     color = Color.LightGray
                 ) {
                     val navController = rememberNavController()
-                    AppScaffold(navController)
+                    AppScaffold(navController,viewModel)
                 }
             }
         }
@@ -46,7 +49,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScaffold(navController: NavHostController) {
+fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
     var showMenu by remember { mutableStateOf(false) } // State to toggle menu
     Scaffold(
         topBar = {
@@ -120,7 +123,7 @@ fun AppScaffold(navController: NavHostController) {
             startDestination = "home",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("home") { HomeScreen() }
+            composable("home") { HomeScreen(viewModel) }
             composable("about") { AboutUsScreen() }
             composable("contact") { ContactUsScreen() }
         }
@@ -128,8 +131,8 @@ fun AppScaffold(navController: NavHostController) {
 }
 
 @Composable
-fun HomeScreen() {
-    InitUi() // Your Home screen is the form you have created
+fun HomeScreen( viewModel: AstroViewModel) {
+    InitUi(viewModel) // Your Home screen is the form you have created
 }
 
 @Composable
@@ -229,12 +232,3 @@ fun ContactUsScreen() {
     }
 }
 
-
-@Composable
-@Preview(showSystemUi = true, showBackground = true)
-fun DefaultPreview() {
-    MyApplicationTheme {
-        val navController = rememberNavController()
-        AppScaffold(navController)
-    }
-}
