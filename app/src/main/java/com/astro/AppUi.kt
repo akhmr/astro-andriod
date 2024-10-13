@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.astro.composable.component.DateOfBirthPicker
 import com.astro.composable.component.GenderSelection
 import com.astro.composable.component.SubmitButton
@@ -39,7 +40,7 @@ import java.util.Calendar
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun InitUi(viewModel: AstroViewModel) {
+fun InitUi(viewModel: AstroViewModel,navController: NavController) {
     // Temporary states for inputs
     val userName = remember { mutableStateOf("") }
     var gender by remember { mutableStateOf("Male") }
@@ -87,10 +88,12 @@ fun InitUi(viewModel: AstroViewModel) {
             coroutineScope.launch {
                 val user = User(userName.value, selectedDate)
                 viewModel.fetchAstroData(user)
+                navController.navigate("astro_data_screen")
             }
         }
             // Display data from API
-            astroData?.let { AstroDataComposable(it) }
+         //   astroData?.let { AstroDataComposable(it) }
+
         }
     }
 

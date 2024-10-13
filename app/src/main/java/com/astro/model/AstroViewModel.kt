@@ -19,7 +19,6 @@ class AstroViewModel : ViewModel() {
 
     fun fetchAstroData(user: User) {
         val astroApiRepo = AstroApiRepo()
-
         viewModelScope.launch {
             try {
                 val response = astroApiRepo.getAstroNum(user)
