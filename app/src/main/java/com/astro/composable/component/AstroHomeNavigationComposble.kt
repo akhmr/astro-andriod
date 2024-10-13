@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.astro.InfoScreen
 import com.astro.InitUi
 import com.astro.data.AstroResponse
 import com.astro.model.AstroViewModel
@@ -29,14 +28,7 @@ fun HomeScreen(viewModel: AstroViewModel, navController: NavHostController) {
     InitUi(viewModel,navController)
 }
 
-@Composable
-fun AstroDataDcreen(astroData: AstroResponse) {
-    Text(
-        text = astroData.data.toString(),
-        modifier = Modifier.padding(top = 20.dp),
-        style = MaterialTheme.typography.bodyMedium
-    )
-}
+
 
 @Composable
 fun AboutUsScreen() {
