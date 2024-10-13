@@ -46,16 +46,10 @@ fun InitUi(viewModel: AstroViewModel,navController: NavController) {
     var gender by remember { mutableStateOf("Male") }
     var selectedDate by remember { mutableStateOf("Select Date of Birth") }
 
-    // Submitted values
-    var submittedName by remember { mutableStateOf("") }
-    var submittedGender by remember { mutableStateOf("Male") }
-    var submittedDateOfBirth by remember { mutableStateOf("Select Date of Birth") }
-
     // Calendar initialization for date picker
     val calendar = Calendar.getInstance()
     val (year, month, day) = Triple(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
 
-    val astroData by viewModel.astroData.collectAsState() //
     val coroutineScope = rememberCoroutineScope() // Manage coroutines in Compose
 
     val datePickerDialog = DatePickerDialog(
@@ -91,9 +85,6 @@ fun InitUi(viewModel: AstroViewModel,navController: NavController) {
                 navController.navigate("astro_data_screen")
             }
         }
-            // Display data from API
-         //   astroData?.let { AstroDataComposable(it) }
-
         }
     }
 

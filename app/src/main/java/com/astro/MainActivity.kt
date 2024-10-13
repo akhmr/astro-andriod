@@ -25,6 +25,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.astro.composable.component.AboutUsScreen
+import com.astro.composable.component.AstroDataDcreen
+import com.astro.composable.component.ContactUsScreen
+import com.astro.composable.component.HomeScreen
 import com.astro.data.AstroResponse
 import com.astro.model.AstroViewModel
 import com.astro.ui.theme.MyApplicationTheme
@@ -51,81 +55,6 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun HomeScreen(viewModel: AstroViewModel,navController: NavHostController) {
-    InitUi(viewModel,navController)
-}
-
-@Composable
-fun AstroDataDcreen(astroData: AstroResponse) {
-    Text(
-        text = astroData.data.toString(),
-        modifier = Modifier.padding(top = 20.dp),
-        style = MaterialTheme.typography.bodyMedium
-    )
-}
-
-@Composable
-fun AboutUsScreen() {
-    InfoScreen(
-        title = "About NumeroPitah",
-        content = """
-            NumeroPitah is a cutting-edge app that offers highly accurate predictions based on numerology, guiding users with personalized insights into their lives. Whether you're seeking clarity in your career, relationships, or personal growth, NumeroPitah harnesses the power of numbers to deliver precise, actionable advice.
-            With its advanced algorithms and deep-rooted knowledge of numerology, NumeroPitah stands out as one of the best numerology apps in the world. It's designed for users seeking meaningful, data-driven predictions that lead to positive transformations and better decision-making.
-        """
-    )
-}
-
-@Composable
-fun InfoScreen(title: String, content: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFFB2EBF2), Color(0xFF00796B))
-                )
-            )
-            .padding(16.dp)
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                Text(
-                    text = title,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-            }
-            item {
-                Text(
-                    text = content.trimIndent(),
-                    fontSize = 18.sp,
-                    color = Color.White
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
-fun ContactUsScreen() {
-    InfoScreen(
-        title = "Contact Us",
-        content = """
-            Address: 123 Astrology Lane, Gurugram, India
-            Email: info@astropitah.com
-            Phone: +1234567890
-        """
-    )
-}
-
-@Composable
 fun MenuItem(
     text: String,
     navController: NavHostController,
@@ -142,6 +71,34 @@ fun MenuItem(
         },
         modifier = Modifier.padding(vertical = 4.dp)
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
+    var showMenu by remember { mutableStateOf(false) }
+
+    Scaffold(
+        topBar = { AppTopBar(navController, showMenu, onMenuToggle = { showMenu = !showMenu }) }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = "home",
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable("home") { HomeScreen(viewModel, navController) }
+            composable("about") { AboutUsScreen() }
+            composable("contact") { ContactUsScreen() }
+             composable("astro_data_screen") {
+                val astroData = viewModel.astroData.collectAsState().value
+                astroData?.let {
+                    AstroDataDcreen(it)
+                }
+
+            }
+        }
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -171,37 +128,5 @@ fun AppTopBar(
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Cyan)
     )
-}
-
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
-    var showMenu by remember { mutableStateOf(false) }
-
-    Scaffold(
-        topBar = { AppTopBar(navController, showMenu, onMenuToggle = { showMenu = !showMenu }) }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = "home",
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable("home") { HomeScreen(viewModel, navController) }
-            composable("about") { AboutUsScreen() }
-            composable("contact") { ContactUsScreen() }
-             composable("astro_data_screen") {
-                val astroData = viewModel.astroData.collectAsState().value
-                astroData?.let {
-                    AstroDataDcreen(it)
-                }
-
-            }
-        }
-    }
-
-
 }
 
