@@ -90,7 +90,7 @@ fun AstroDataDcreen(astroData: AstroResponse) {
         CategoryGrid(astroData.data.toString())
     }
     Text(
-        text = astroData.data.toString(),
+        text = "",
         modifier = Modifier.padding(top = 20.dp),
         style = MaterialTheme.typography.bodyMedium
     )

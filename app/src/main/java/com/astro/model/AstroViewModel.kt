@@ -1,6 +1,7 @@
 package com.astro.model
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astro.data.AstroResponse
@@ -23,6 +24,7 @@ class AstroViewModel : ViewModel() {
             try {
                 val response = astroApiRepo.getAstroNum(user)
                 _astroData.value = response.body()!! // Update the state with the API result
+                Log.d("Hello ", _astroData.value.toString())
             } catch (e: Exception) {
                 // Handle error case, such as updating the state with an error message
                 _astroData.value = AstroResponse("201","failure",data = null)
