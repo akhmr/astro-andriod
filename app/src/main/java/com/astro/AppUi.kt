@@ -2,6 +2,7 @@ package com.astro
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -64,6 +65,7 @@ fun InitUi(viewModel: AstroViewModel,navController: NavController) {
         colors = listOf(Cyan, LightGray, Yellow)
     )
 
+
     Column(
         modifier = Modifier
             .fillMaxSize() // Ensures the column takes the entire screen
@@ -78,13 +80,19 @@ fun InitUi(viewModel: AstroViewModel,navController: NavController) {
         GenderSelection(gender) { gender = it }
         DateOfBirthPicker(selectedDate, datePickerDialog)
 
-        SubmitButton {
+        SubmitButton (onClick = {
             coroutineScope.launch {
                 val user = User(userName.value, selectedDate)
-                viewModel.fetchAstroData(user)
-                navController.navigate("astro_data_screen")
+                try {
+                    viewModel.fetchAstroData(user)
+
+                    navController.navigate("astro_data_screen")
+                } catch (e: Exception) {
+                   Log.d("Hello exception ", e.toString())
+                }
             }
         }
+        )
         }
     }
 
