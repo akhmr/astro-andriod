@@ -89,6 +89,8 @@ fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
                     AstroDataDcreen(viewModel,it)
                 }
 
+                // val categories: List<String> = data?.getDisplayNames() ?: emptyList() /
+
             }
         }
     }

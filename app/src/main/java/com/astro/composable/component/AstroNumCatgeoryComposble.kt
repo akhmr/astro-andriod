@@ -1,5 +1,6 @@
 package com.astro.composable.component
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -21,8 +22,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.astro.NumCategoryDetail
 import com.astro.data.Data
 import com.astro.model.AstroViewModel
 
@@ -43,13 +46,10 @@ fun Header(title: String) {
 @Composable
 fun CategoryGrid(astroResponse: AstroResponse) {
 
-
-
     val data: Data? = astroResponse.data
     val categories: List<String> = data?.getDisplayNames() ?: emptyList() // U
-
     Log.d("Hello categories ", categories.toString())
-
+    val context = LocalContext.current //
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.padding(8.dp),
@@ -58,19 +58,31 @@ fun CategoryGrid(astroResponse: AstroResponse) {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(categories.size) { index ->
-            CategoryCard(title = categories[index],categories[index])
+            CategoryCard(title = categories[index], categories[index]) {
+                // Handle click event here, such as navigating to NumCategoryDetail
+                val category = categories[index]
+                val astroDto = data?.astroDtos?.get(index)
+                astroDto?.let {
+                    val intent = Intent(context, NumCategoryDetail::class.java).apply {
+                        putExtra("astroDto", it)
+                    }
+                    context.startActivity(intent)
+                }
+            }
         }
     }
 }
 
+
+
 @Composable
-fun CategoryCard(title: String, textToDisplay: String) {
+fun CategoryCard(title: String, textToDisplay: String, onClick: () -> Unit ) {
     Card(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(1.5f)
-            .clickable { /* Handle click */ }
+            .clickable {  onClick()  }
             .padding(8.dp)
     ) {
         Box(
@@ -89,6 +101,8 @@ fun CategoryCard(title: String, textToDisplay: String) {
     }
 }
 
+
+
 @Composable
 fun AstroDataDcreen(viewModel: AstroViewModel, astroData: AstroResponse) {
 
@@ -106,13 +120,9 @@ fun AstroDataDcreen(viewModel: AstroViewModel, astroData: AstroResponse) {
     } else {
 
         Column {
-            Header(title = "October 13")
+           // Header(title = "October 13")
             CategoryGrid(astroData)
         }
-        Text(
-            text = "",
-            modifier = Modifier.padding(top = 20.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
+
     }
 }

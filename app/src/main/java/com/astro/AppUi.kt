@@ -85,7 +85,6 @@ fun InitUi(viewModel: AstroViewModel,navController: NavController) {
                 val user = User(userName.value, selectedDate)
                 try {
                     viewModel.fetchAstroData(user)
-
                     navController.navigate("astro_data_screen")
                 } catch (e: Exception) {
                    Log.d("Hello exception ", e.toString())
@@ -97,7 +96,7 @@ fun InitUi(viewModel: AstroViewModel,navController: NavController) {
     }
 
 
-@Composable
+/*@Composable
 fun AstroDataComposable(astroData: AstroResponse) {
 
     Text(
@@ -106,7 +105,7 @@ fun AstroDataComposable(astroData: AstroResponse) {
         style = MaterialTheme.typography.bodyMedium
     )
 
-}
+}*/
 
 /*@Composable
 @Preview(showSystemUi = true, showBackground = true)
