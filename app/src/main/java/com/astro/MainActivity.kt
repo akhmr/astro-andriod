@@ -36,17 +36,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AstroAppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navController = rememberNavController()
-                    AppScaffold(navController,viewModel)
-                }
+                val navController = rememberNavController()
+                AppScaffold(navController, viewModel)
             }
         }
+
     }
 }
+
+
 
 
 @Composable
