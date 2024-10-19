@@ -25,6 +25,7 @@ import com.astro.composable.component.AstroDataDcreen
 import com.astro.composable.component.ContactUsScreen
 import com.astro.composable.component.HomeScreen
 import com.astro.model.AstroViewModel
+import com.astro.ui.theme.AstroAppTheme
 import com.astro.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,10 +35,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
+            AstroAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color.LightGray
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
                     AppScaffold(navController,viewModel)

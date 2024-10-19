@@ -61,15 +61,15 @@ fun InitUi(viewModel: AstroViewModel,navController: NavController) {
         year, month, day
     )
     // Background Gradient
-    val gradient = Brush.verticalGradient(
-        colors = listOf(Cyan, LightGray, Yellow)
-    )
+//    val gradient = Brush.verticalGradient(
+//        colors = listOf(Cyan, LightGray, Yellow)
+//    )
 
 
     Column(
         modifier = Modifier
             .fillMaxSize() // Ensures the column takes the entire screen
-            .background(gradient) // Applies the gradient background
+          //  .background(gradient) // Applies the gradient background
             .padding(16.dp)
             .verticalScroll(rememberScrollState()), // Scrolls if content overflows
         verticalArrangement = Arrangement.Center,

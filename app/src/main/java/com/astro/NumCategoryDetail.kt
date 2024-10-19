@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,11 +49,32 @@ class NumCategoryDetail : ComponentActivity() {
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                text = "Description: ${astroDto.displayName}",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal
-            )
+
+            astroDto.astroNumSubcategories.forEach{subcategory->
+                Text(
+                    text = "${subcategory.posTrait}",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+
+                Text(
+                    text = "${subcategory.negTrait}",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+
+                Text(
+                    text = "${subcategory.remedy}",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+
+
+            }
+
         }
     }
 
