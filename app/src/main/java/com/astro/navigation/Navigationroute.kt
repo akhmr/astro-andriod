@@ -7,6 +7,7 @@ sealed class NavigationRoute(val route: String) {
     object About : NavigationRoute("about")
     object Contact : NavigationRoute("about")
     object AstroScreen : NavigationRoute("astro_data_screen")
+    object AstroDetail : NavigationRoute("astro_detail}") //
 
    /* @Serializable
     object Home : NavigationRoute("home")

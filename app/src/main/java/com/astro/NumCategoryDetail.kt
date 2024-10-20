@@ -27,13 +27,13 @@ class NumCategoryDetail : ComponentActivity() {
         setContent {
             AstroAppTheme {
                 val navController = rememberNavController()
-                NumCategoryDetailScreen(navController, astroDto)
+               // NumCategoryDetailScreen(navController, astroDto)
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/*@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NumCategoryDetailScreen(navController: NavHostController, astroDto: AstroDto?) {
     var showMenu by remember { mutableStateOf(false) }
@@ -55,7 +55,7 @@ fun NumCategoryDetailScreen(navController: NavHostController, astroDto: AstroDto
             )
         }
     }
-}
+}*/
 
     @Composable
     fun DisplayAstroDto(astroDto: AstroDto, modifier: Modifier = Modifier) {

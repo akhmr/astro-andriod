@@ -28,10 +28,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.astro.NumCategoryDetail
 import com.astro.data.AstroDto
 import com.astro.data.Data
 import com.astro.model.AstroViewModel
+import com.astro.model.NavigationViewModel
+import com.astro.navigation.GlobalNavigation
+import com.astro.navigation.NavigationRoute
 
 
 @Composable
@@ -53,8 +57,9 @@ fun CategoryGrid(astroResponse: AstroResponse) {
     val data: Data? = astroResponse.data
     val categories: List<String> = data?.getDisplayNames() ?: emptyList() // U
     Log.d("Hello categories ", categories.toString())
-    var selectedAstroDto by remember { mutableStateOf<AstroDto?>(null) }
+   // var selectedAstroDto by remember { mutableStateOf<AstroDto?>(null) }
     val context = LocalContext.current //
+    val navigationViewModel: NavigationViewModel = viewModel()
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.padding(8.dp),
@@ -68,7 +73,13 @@ fun CategoryGrid(astroResponse: AstroResponse) {
                 val category = categories[index]
                 val astroDto = data?.astroDtos?.get(index)
 
-                selectedAstroDto = data?.astroDtos?.get(index)
+               // selectedAstroDto = data?.astroDtos?.get(index)
+                Log.d("navigationViewModel ",GlobalNavigation.navController.toString())
+              //  if (astroDto != null) {
+                   // navController.navigate("astro_detail/${astroDto.id}") // Use the ID of the astroDto
+                //    navController.navigate(NavigationRoute.AstroScreen.route).navController?.navigate(("astro_detail"))
+                    GlobalNavigation.navController?.navigate(NavigationRoute.AstroDetail.route)
+               // }
 
 
                 //astroDto?.let {
@@ -82,9 +93,7 @@ fun CategoryGrid(astroResponse: AstroResponse) {
             }
         }
 
-    selectedAstroDto?.let {
-        DisplayAstroDetail(it)
-    }
+
     }
 
 
@@ -116,8 +125,28 @@ fun CategoryCard(title: String, textToDisplay: String, onClick:  () -> Unit ) {
     }
 }
 
-
 @Composable
+fun DisplayAstroDetail(displayName: String) {
+    Log.d("Name ", displayName)
+    Column(modifier = Modifier.fillMaxSize().fillMaxWidth()) {
+        Text(
+            text = "Name: ${displayName}",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+
+            Text(
+                text = "${displayName}",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+
+    }
+}
+
+/*@Composable
 fun DisplayAstroDetail(astroDto: AstroDto) {
     Log.d("Hello categories ", astroDto.displayName)
     Column(modifier = Modifier.padding(16.dp)) {
@@ -153,7 +182,7 @@ fun DisplayAstroDetail(astroDto: AstroDto) {
         }
 
     }
-}
+}*/
 
 
 

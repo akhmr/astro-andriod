@@ -1,6 +1,7 @@
 package com.astro
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,8 +26,11 @@ import androidx.navigation.compose.rememberNavController
 import com.astro.composable.component.AboutUsScreen
 import com.astro.composable.component.AstroDataDcreen
 import com.astro.composable.component.ContactUsScreen
+import com.astro.composable.component.DisplayAstroDetail
 import com.astro.composable.component.HomeScreen
 import com.astro.model.AstroViewModel
+import com.astro.model.NavigationViewModel
+import com.astro.navigation.GlobalNavigation
 import com.astro.navigation.NavigationRoute
 import com.astro.ui.theme.AstroAppTheme
 import com.astro.ui.theme.MyApplicationTheme
@@ -34,12 +40,15 @@ import kotlinx.serialization.Serializable
 class MainActivity : ComponentActivity() {
 
     private val viewModel: AstroViewModel by viewModels()
+    private val navigationViewModel: NavigationViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             AstroAppTheme {
                 val navController = rememberNavController()
+                GlobalNavigation.navController = navController
                 AppScaffold(navController, viewModel)
             }
         }
@@ -68,8 +77,10 @@ fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
                 astroData?.let {
                     AstroDataDcreen(viewModel, it)
                 }
-
             }
+            composable(NavigationRoute.AstroDetail.route) {
+                        DisplayAstroDetail("arvind") // Call your DisplayAstroDetail
+                }
         }
     }
 }
@@ -102,11 +113,30 @@ fun AppTopBar(
     showMenu: Boolean,
     onMenuToggle: () -> Unit
 ) {
+
+    var currentRoute by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(navController) {
+        navController.currentBackStackEntryFlow.collect { backStackEntry ->
+            currentRoute = backStackEntry.destination.route
+        }
+    }
     TopAppBar(
         title = { Text("NumeroPitah") },
         navigationIcon = {
-            IconButton(onClick = onMenuToggle) {
-                Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+            /*IconButton(onClick = onMenuToggle) {
+                Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")*/
+                    Log.d("Hello name ", currentRoute.toString())
+
+            if (currentRoute != NavigationRoute.Home.route) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                }
+            } else {
+                IconButton(onClick = onMenuToggle) {
+                    Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+                }
+
             }
             DropdownMenu(
                 expanded = showMenu,
