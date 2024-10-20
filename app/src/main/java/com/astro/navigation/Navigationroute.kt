@@ -5,8 +5,20 @@ import kotlinx.serialization.Serializable
 sealed class NavigationRoute(val route: String) {
     object Home : NavigationRoute("home")
     object About : NavigationRoute("about")
-    object Contact : NavigationRoute("contact")
+    object Contact : NavigationRoute("about")
     object AstroScreen : NavigationRoute("astro_data_screen")
+
+   /* @Serializable
+    object Home : NavigationRoute("home")
+
+    @Serializable
+    object About : NavigationRoute("about")
+
+    @Serializable
+    object Contact : NavigationRoute("about")
+
+    @Serializable
+    object AstroScreen : NavigationRoute("astro_data_screen")*/
 
 
    /* data class AstroData(val id: String) : NavigationRoute("astro_data_screen/{id}") {

@@ -20,12 +20,16 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.astro.NumCategoryDetail
+import com.astro.data.AstroDto
 import com.astro.data.Data
 import com.astro.model.AstroViewModel
 
@@ -49,6 +53,7 @@ fun CategoryGrid(astroResponse: AstroResponse) {
     val data: Data? = astroResponse.data
     val categories: List<String> = data?.getDisplayNames() ?: emptyList() // U
     Log.d("Hello categories ", categories.toString())
+    var selectedAstroDto by remember { mutableStateOf<AstroDto?>(null) }
     val context = LocalContext.current //
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -62,21 +67,31 @@ fun CategoryGrid(astroResponse: AstroResponse) {
                 // Handle click event here, such as navigating to NumCategoryDetail
                 val category = categories[index]
                 val astroDto = data?.astroDtos?.get(index)
-                astroDto?.let {
-                    val intent = Intent(context, NumCategoryDetail::class.java).apply {
-                        putExtra("astroDto", it)
-                    }
-                    context.startActivity(intent)
+
+                selectedAstroDto = data?.astroDtos?.get(index)
+
+
+                //astroDto?.let {
+                   /* val intent = Intent(context, NumCategoryDetail::class.java).apply {
+                        putExtra("astroDto", it)*/
+
+
+                  //  }
+                   // context.startActivity(intent)
                 }
             }
         }
+
+    selectedAstroDto?.let {
+        DisplayAstroDetail(it)
     }
-}
+    }
+
 
 
 
 @Composable
-fun CategoryCard(title: String, textToDisplay: String, onClick: () -> Unit ) {
+fun CategoryCard(title: String, textToDisplay: String, onClick:  () -> Unit ) {
     Card(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
@@ -98,6 +113,45 @@ fun CategoryCard(title: String, textToDisplay: String, onClick: () -> Unit ) {
                 fontSize = 16.sp
             )
         }
+    }
+}
+
+
+@Composable
+fun DisplayAstroDetail(astroDto: AstroDto) {
+    Log.d("Hello categories ", astroDto.displayName)
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(
+            text = "Name: ${astroDto.displayName}",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        astroDto.astroNumSubcategories.forEach{subcategory->
+            Text(
+                text = "${subcategory.posTrait}",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+
+            Text(
+                text = "${subcategory.negTrait}",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+
+            Text(
+                text = "${subcategory.remedy}",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+
+
+        }
+
     }
 }
 

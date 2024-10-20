@@ -51,7 +51,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
     var showMenu by remember { mutableStateOf(false) }
-    val navController = rememberNavController()
 
     Scaffold(
         topBar = { AppTopBar(navController, showMenu, onMenuToggle = { showMenu = !showMenu }) }
