@@ -82,22 +82,13 @@ fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
                     AstroDataDcreen(viewModel, it)
                 }
             }
-            /*composable(NavigationRoute.AstroDetail.route, arguments = listOf(navArgument("astroDto"){
-                type = NavType.ParcelableType(AstroDto::class.java) }
-            )) {
-                    backStackEntry ->
-                val astroDto =backStackEntry.arguments?.getParcelable<AstroDto>("AstroDto")
-                        DisplayAstroDetail(astroDto) // Call your DisplayAstroDetail
-                }*/
+
             composable(route = NavigationRoute.AstroDetail.route) {
                     val astroDto = navController.currentBackStackEntry?.savedStateHandle?.get<AstroDto>("astroDto")
-                    if (astroDto != null) {
-                        DisplayAstroDetail(astroDto)
-                    } else {
-                        // Handle the null case if needed
+                        if (astroDto != null) {
+                            DisplayAstroDetail(astroDto)
+                        }
                     }
-                    }
-
                 }
             
         }

@@ -139,18 +139,29 @@ fun DisplayAstroDetail(astroDto: AstroDto?) {
         Log.d("Name ", astroDto.displayName)
     }
     Column(modifier = Modifier.fillMaxSize().fillMaxWidth()) {
-        if (astroDto != null) {
+        Text(
+            text = "Name: ${astroDto?.displayName}",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        astroDto?.astroNumSubcategories?.forEach{ subcategory->
             Text(
-                text = "Name: ${astroDto.displayName}",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                text = "${subcategory.posTrait}",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(vertical = 4.dp)
             )
-        }
 
-
-        if (astroDto != null) {
             Text(
-                text = "${astroDto.displayName}",
+                text = "${subcategory.negTrait}",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+
+            Text(
+                text = "${subcategory.remedy}",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
                 modifier = Modifier.padding(vertical = 4.dp)
