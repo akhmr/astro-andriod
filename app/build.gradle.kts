@@ -2,8 +2,11 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
+  //  id ("org.jetbrains.kotlin.plugin.serialization")
    // alias(libs.plugins.kotlin.se)
-
+   // kotlin("plugin.serialization") version "1.7.3"
+    kotlin("plugin.serialization") version "2.0.21"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
 }
 
 android {
@@ -70,7 +73,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.2")
     implementation("org.json:json:20090211")
 
-    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation (libs.kotlinx.serialization.json.v173)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

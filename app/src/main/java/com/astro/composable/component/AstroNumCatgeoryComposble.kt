@@ -1,6 +1,6 @@
 package com.astro.composable.component
 
-import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -20,22 +20,20 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.astro.NumCategoryDetail
-import com.astro.data.AstroDto
+import com.astro.data.AstroNumSubcategory
 import com.astro.data.Data
 import com.astro.model.AstroViewModel
 import com.astro.model.NavigationViewModel
 import com.astro.navigation.GlobalNavigation
 import com.astro.navigation.NavigationRoute
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 
 @Composable
@@ -78,7 +76,12 @@ fun CategoryGrid(astroResponse: AstroResponse) {
               //  if (astroDto != null) {
                    // navController.navigate("astro_detail/${astroDto.id}") // Use the ID of the astroDto
                 //    navController.navigate(NavigationRoute.AstroScreen.route).navController?.navigate(("astro_detail"))
-                    GlobalNavigation.navController?.navigate(NavigationRoute.AstroDetail.route)
+
+
+                Log.d("Hello astroJson  ",astroDto.toString())
+                val astroJson = Json.encodeToString(astroDto)
+                Log.d("Hello json  ",astroJson.toString())
+                GlobalNavigation.navController?.navigate("details/${Uri.encode(astroJson)}")
                // }
 
 
@@ -126,22 +129,28 @@ fun CategoryCard(title: String, textToDisplay: String, onClick:  () -> Unit ) {
 }
 
 @Composable
-fun DisplayAstroDetail(displayName: String) {
-    Log.d("Name ", displayName)
+fun DisplayAstroDetail(astroNumSubcategory: AstroNumSubcategory?) {
+    if (astroNumSubcategory != null) {
+        Log.d("Name ", astroNumSubcategory.displayName)
+    }
     Column(modifier = Modifier.fillMaxSize().fillMaxWidth()) {
-        Text(
-            text = "Name: ${displayName}",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-
+        if (astroNumSubcategory != null) {
             Text(
-                text = "${displayName}",
+                text = "Name: ${astroNumSubcategory.displayName}",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+
+        if (astroNumSubcategory != null) {
+            Text(
+                text = "${astroNumSubcategory.displayName}",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
+        }
 
     }
 }

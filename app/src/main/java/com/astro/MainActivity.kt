@@ -14,28 +14,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.astro.composable.component.AboutUsScreen
 import com.astro.composable.component.AstroDataDcreen
 import com.astro.composable.component.ContactUsScreen
 import com.astro.composable.component.DisplayAstroDetail
 import com.astro.composable.component.HomeScreen
+import com.astro.data.AstroNumSubcategory
 import com.astro.model.AstroViewModel
 import com.astro.model.NavigationViewModel
 import com.astro.navigation.GlobalNavigation
 import com.astro.navigation.NavigationRoute
 import com.astro.ui.theme.AstroAppTheme
-import com.astro.ui.theme.MyApplicationTheme
-import com.google.gson.annotations.SerializedName
-import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
 
@@ -78,8 +77,12 @@ fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
                     AstroDataDcreen(viewModel, it)
                 }
             }
-            composable(NavigationRoute.AstroDetail.route) {
-                        DisplayAstroDetail("arvind") // Call your DisplayAstroDetail
+            composable(NavigationRoute.AstroDetail.route, arguments = listOf(navArgument("astroSubcategory"){
+                type = NavType.ParcelableType(AstroNumSubcategory::class.java) }
+            )) {
+                    backStackEntry ->
+                val astroSubcategory =backStackEntry.arguments?.getParcelable<AstroNumSubcategory>("astroSubcategory")
+                        DisplayAstroDetail(astroSubcategory) // Call your DisplayAstroDetail
                 }
         }
     }
