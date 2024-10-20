@@ -1,5 +1,6 @@
 package com.astro.navigation
 
+import com.astro.data.AstroDto
 import kotlinx.serialization.Serializable
 
 sealed class NavigationRoute(val route: String) {
@@ -7,25 +8,15 @@ sealed class NavigationRoute(val route: String) {
     object About : NavigationRoute("about")
     object Contact : NavigationRoute("about")
     object AstroScreen : NavigationRoute("astro_data_screen")
-    object AstroDetail : NavigationRoute("astro_detail/{astroSubcategory}") //
+   // object AstroDetail : NavigationRoute("astro_detail")
 
-   /* @Serializable
-    object Home : NavigationRoute("home")
-
-    @Serializable
-    object About : NavigationRoute("about")
-
-    @Serializable
-    object Contact : NavigationRoute("about")
-
-    @Serializable
-    object AstroScreen : NavigationRoute("astro_data_screen")*/
+    object AstroDetail : NavigationRoute("astro_detail")
+    }
 
 
-   /* data class AstroData(val id: String) : NavigationRoute("astro_data_screen/{id}") {
-        fun createRoute(id: String) = "astro_data_screen/$id"
-    }*/
-}
+
+
+
 
 
 /*

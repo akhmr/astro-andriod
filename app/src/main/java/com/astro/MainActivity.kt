@@ -1,11 +1,13 @@
 package com.astro
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -29,6 +31,7 @@ import com.astro.composable.component.AstroDataDcreen
 import com.astro.composable.component.ContactUsScreen
 import com.astro.composable.component.DisplayAstroDetail
 import com.astro.composable.component.HomeScreen
+import com.astro.data.AstroDto
 import com.astro.data.AstroNumSubcategory
 import com.astro.model.AstroViewModel
 import com.astro.model.NavigationViewModel
@@ -41,6 +44,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: AstroViewModel by viewModels()
     private val navigationViewModel: NavigationViewModel by viewModels()
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -55,6 +59,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
@@ -77,16 +82,28 @@ fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
                     AstroDataDcreen(viewModel, it)
                 }
             }
-            composable(NavigationRoute.AstroDetail.route, arguments = listOf(navArgument("astroSubcategory"){
-                type = NavType.ParcelableType(AstroNumSubcategory::class.java) }
+            /*composable(NavigationRoute.AstroDetail.route, arguments = listOf(navArgument("astroDto"){
+                type = NavType.ParcelableType(AstroDto::class.java) }
             )) {
                     backStackEntry ->
-                val astroSubcategory =backStackEntry.arguments?.getParcelable<AstroNumSubcategory>("astroSubcategory")
-                        DisplayAstroDetail(astroSubcategory) // Call your DisplayAstroDetail
+                val astroDto =backStackEntry.arguments?.getParcelable<AstroDto>("AstroDto")
+                        DisplayAstroDetail(astroDto) // Call your DisplayAstroDetail
+                }*/
+            composable(route = NavigationRoute.AstroDetail.route) {
+                    val astroDto = navController.currentBackStackEntry?.savedStateHandle?.get<AstroDto>("astroDto")
+                    if (astroDto != null) {
+                        DisplayAstroDetail(astroDto)
+                    } else {
+                        // Handle the null case if needed
+                    }
+                    }
+
                 }
+            
         }
     }
-}
+
+
 
 
 

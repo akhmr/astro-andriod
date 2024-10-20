@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.astro.data.AstroDto
 import com.astro.data.AstroNumSubcategory
 import com.astro.data.Data
 import com.astro.model.AstroViewModel
@@ -81,7 +82,11 @@ fun CategoryGrid(astroResponse: AstroResponse) {
                 Log.d("Hello astroJson  ",astroDto.toString())
                 val astroJson = Json.encodeToString(astroDto)
                 Log.d("Hello json  ",astroJson.toString())
-                GlobalNavigation.navController?.navigate("details/${Uri.encode(astroJson)}")
+               //GlobalNavigation.navController?.currentBackStackEntry?.savedStateHandle?.set("astroDto", astroDto)
+                GlobalNavigation.navController?.navigate(NavigationRoute.AstroDetail.route)
+
+                GlobalNavigation.navController?.currentBackStackEntry?.savedStateHandle?.set("astroDto", astroDto)
+
                // }
 
 
@@ -129,23 +134,23 @@ fun CategoryCard(title: String, textToDisplay: String, onClick:  () -> Unit ) {
 }
 
 @Composable
-fun DisplayAstroDetail(astroNumSubcategory: AstroNumSubcategory?) {
-    if (astroNumSubcategory != null) {
-        Log.d("Name ", astroNumSubcategory.displayName)
+fun DisplayAstroDetail(astroDto: AstroDto?) {
+    if (astroDto != null) {
+        Log.d("Name ", astroDto.displayName)
     }
     Column(modifier = Modifier.fillMaxSize().fillMaxWidth()) {
-        if (astroNumSubcategory != null) {
+        if (astroDto != null) {
             Text(
-                text = "Name: ${astroNumSubcategory.displayName}",
+                text = "Name: ${astroDto.displayName}",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
         }
 
 
-        if (astroNumSubcategory != null) {
+        if (astroDto != null) {
             Text(
-                text = "${astroNumSubcategory.displayName}",
+                text = "${astroDto.displayName}",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
                 modifier = Modifier.padding(vertical = 4.dp)
