@@ -25,8 +25,11 @@ import com.astro.composable.component.AstroDataDcreen
 import com.astro.composable.component.ContactUsScreen
 import com.astro.composable.component.HomeScreen
 import com.astro.model.AstroViewModel
+import com.astro.navigation.NavigationRoute
 import com.astro.ui.theme.AstroAppTheme
 import com.astro.ui.theme.MyApplicationTheme
+import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
 
@@ -44,6 +47,33 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
+    var showMenu by remember { mutableStateOf(false) }
+    val navController = rememberNavController()
+
+    Scaffold(
+        topBar = { AppTopBar(navController, showMenu, onMenuToggle = { showMenu = !showMenu }) }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = NavigationRoute.Home.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(NavigationRoute.Home.route) { HomeScreen(viewModel, navController) }
+            composable(NavigationRoute.About.route) { AboutUsScreen() }
+            composable(NavigationRoute.Contact.route) { ContactUsScreen() }
+            composable(NavigationRoute.AstroScreen.route) {
+                val astroData = viewModel.astroData.collectAsState().value
+                astroData?.let {
+                    AstroDataDcreen(viewModel, it)
+                }
+
+            }
+        }
+    }
+}
 
 
 
@@ -68,36 +98,6 @@ fun MenuItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
-    var showMenu by remember { mutableStateOf(false) }
-
-    Scaffold(
-        topBar = { AppTopBar(navController, showMenu, onMenuToggle = { showMenu = !showMenu }) }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = "home",
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable("home") { HomeScreen(viewModel, navController) }
-            composable("about") { AboutUsScreen() }
-            composable("contact") { ContactUsScreen() }
-             composable("astro_data_screen") {
-                val astroData = viewModel.astroData.collectAsState().value
-                astroData?.let {
-                    AstroDataDcreen(viewModel,it)
-                }
-
-                // val categories: List<String> = data?.getDisplayNames() ?: emptyList() /
-
-            }
-        }
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 fun AppTopBar(
     navController: NavHostController,
     showMenu: Boolean,
@@ -116,12 +116,14 @@ fun AppTopBar(
                     .width(140.dp)
                     .background(Color.DarkGray)
             ) {
-                MenuItem("Home", navController, "home", onMenuToggle)
-                MenuItem("About Us", navController, "about", onMenuToggle)
-                MenuItem("Contact Us", navController, "contact", onMenuToggle)
+
+                MenuItem("Home", navController, NavigationRoute.Home.route, onMenuToggle)
+                MenuItem("About Us", navController, NavigationRoute.About.route, onMenuToggle)
+                MenuItem("Contact Us", navController, NavigationRoute.Contact.route, onMenuToggle)
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Cyan)
     )
 }
+
 

@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
+   // alias(libs.plugins.kotlin.se)
+
 }
 
 android {
@@ -67,6 +69,8 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0")
     implementation("androidx.navigation:navigation-compose:2.8.2")
     implementation("org.json:json:20090211")
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

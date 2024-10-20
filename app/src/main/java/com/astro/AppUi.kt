@@ -36,6 +36,7 @@ import com.astro.composable.component.UserInputField
 import com.astro.data.AstroResponse
 import com.astro.data.User
 import com.astro.model.AstroViewModel
+import com.astro.navigation.NavigationRoute
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -85,7 +86,7 @@ fun InitUi(viewModel: AstroViewModel,navController: NavController) {
                 val user = User(userName.value, selectedDate)
                 try {
                     viewModel.fetchAstroData(user)
-                    navController.navigate("astro_data_screen")
+                    navController.navigate(NavigationRoute.AstroScreen.route)
                 } catch (e: Exception) {
                    Log.d("Hello exception ", e.toString())
                 }
