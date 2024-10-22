@@ -162,7 +162,9 @@ fun AppTopBar(
                 MenuItem("Contact Us", navController, NavigationRoute.Contact.route, onMenuToggle)
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Cyan)
+                colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color(0xFFB2EBF2) // Set the container color to light blue
+                )
     )
 }
 

@@ -16,6 +16,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -44,9 +45,9 @@ import java.util.Calendar
 @Composable
 fun InitUi(viewModel: AstroViewModel,navController: NavController) {
     // Temporary states for inputs
-    val userName = remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf("MALE") }
-    var selectedDate by remember { mutableStateOf("Select Date of Birth") }
+    val userName = rememberSaveable { mutableStateOf("") }
+    var gender by rememberSaveable { mutableStateOf("MALE") }
+    var selectedDate by rememberSaveable { mutableStateOf("Select Date of Birth") }
 
     // Calendar initialization for date picker
     val calendar = Calendar.getInstance()
