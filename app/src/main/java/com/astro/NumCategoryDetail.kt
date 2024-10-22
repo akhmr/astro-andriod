@@ -75,20 +75,22 @@ fun NumCategoryDetailScreen(navController: NavHostController, astroDto: AstroDto
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
 
-                Text(
-                    text = "${subcategory.negTrait}",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-
-                Text(
-                    text = "${subcategory.remedy}",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-
+                if (subcategory.negTrait != null) {
+                    Text(
+                        text = "${subcategory.negTrait}",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+               if( subcategory.remedy != null) {
+                   Text(
+                       text = "${subcategory.remedy}",
+                       fontSize = 16.sp,
+                       fontWeight = FontWeight.Normal,
+                       modifier = Modifier.padding(vertical = 4.dp)
+                   )
+               }
 
             }
 

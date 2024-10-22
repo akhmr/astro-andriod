@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Parcelize
 data class AstroNumSubcategory(
     val displayName: String,
-    val negTrait: String,
+    val negTrait: String? = null,
     val posTrait: String,
-    val remedy: String
+    val remedy: String?=null
 ) : Parcelable
