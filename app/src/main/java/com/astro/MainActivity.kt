@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -38,6 +39,8 @@ import com.astro.model.NavigationViewModel
 import com.astro.navigation.GlobalNavigation
 import com.astro.navigation.NavigationRoute
 import com.astro.ui.theme.AstroAppTheme
+import kotlinx.coroutines.launch
+import com.astro.navigation.NavigationRoute.About.route as route1
 
 class MainActivity : ComponentActivity() {
 
@@ -52,7 +55,8 @@ class MainActivity : ComponentActivity() {
             AstroAppTheme {
                 val navController = rememberNavController()
                 GlobalNavigation.navController = navController
-                AppScaffold(navController, viewModel)
+               NavigationDrawerInitUI(navController,viewModel)
+              // AppScaffold(navController, viewModel)
             }
         }
 
@@ -64,56 +68,98 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppScaffold(navController: NavHostController, viewModel: AstroViewModel) {
     var showMenu by remember { mutableStateOf(false) }
+    var drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = { AppTopBar(navController, showMenu, onMenuToggle = { showMenu = !showMenu }) }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = NavigationRoute.Home.route,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable(NavigationRoute.Home.route) { HomeScreen(viewModel, navController) }
-            composable(NavigationRoute.About.route) { AboutUsScreen() }
-            composable(NavigationRoute.Contact.route) { ContactUsScreen() }
-            composable(NavigationRoute.AstroScreen.route) {
-                val astroData = viewModel.astroData.collectAsState().value
-                astroData?.let {
-                    AstroDataDcreen(viewModel, it)
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+
+            DrawerContent(
+                onDestinationClicked = { route ->
+                    scope.launch {
+                        drawerState.close() // Close the drawer
+                    }
+                    navController.navigate(route)
                 }
-            }
-
-            composable(route = NavigationRoute.AstroDetail.route) {
-                    val astroDto = navController.currentBackStackEntry?.savedStateHandle?.get<AstroDto>("astroDto")
-                        if (astroDto != null) {
-                            DisplayAstroDetail(astroDto)
+            )
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                AppTopBar(
+                    navController,
+                    onMenuToggle = {
+                        scope.launch {
+                            if (drawerState.isClosed) drawerState.open() else drawerState.close()
                         }
                     }
+                )
+            }
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = NavigationRoute.Home.route,
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                composable(NavigationRoute.Home.route) { HomeScreen(viewModel, navController) }
+                composable(NavigationRoute.About.route) { AboutUsScreen() }
+                composable(NavigationRoute.Contact.route) { ContactUsScreen() }
+                composable(NavigationRoute.AstroScreen.route) {
+                    val astroData = viewModel.astroData.collectAsState().value
+                    astroData?.let {
+                        AstroDataDcreen(viewModel, it)
+                    }
                 }
-            
+                composable(route = NavigationRoute.AstroDetail.route) {
+                    val astroDto = navController.currentBackStackEntry?.savedStateHandle?.get<AstroDto>("astroDto")
+                    if (astroDto != null) {
+                        DisplayAstroDetail(astroDto)
+                    }
+                }
+            }
         }
     }
+}
+
 
 
 
 
 
 @Composable
-fun MenuItem(
-    text: String,
-    navController: NavHostController,
-    route: String,
-    onClick: () -> Unit
-) {
-    DropdownMenuItem(
-        text = {
-            Text(text, fontWeight = FontWeight.Normal, fontSize = 16.sp, color = Color.White)
-        },
-        onClick = {
-            navController.navigate(route)
-            onClick()
-        },
-        modifier = Modifier.padding(vertical = 4.dp)
+fun DrawerContent(onDestinationClicked: (String) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+           // .background(Color.DarkGray)
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Menu",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        MenuItem("Home", onClick = { onDestinationClicked(NavigationRoute.Home.route) })
+        MenuItem("About Us", onClick = { onDestinationClicked(NavigationRoute.About.route) })
+        MenuItem("Contact Us", onClick = { onDestinationClicked(NavigationRoute.Contact.route) })
+    }
+}
+
+@Composable
+fun MenuItem(text: String, onClick: () -> Unit) {
+    Text(
+        text = text,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Normal,
+        color = Color.White,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onClick() }
     )
 }
 
@@ -121,10 +167,8 @@ fun MenuItem(
 @Composable
 fun AppTopBar(
     navController: NavHostController,
-    showMenu: Boolean,
     onMenuToggle: () -> Unit
 ) {
-
     var currentRoute by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(navController) {
@@ -132,13 +176,10 @@ fun AppTopBar(
             currentRoute = backStackEntry.destination.route
         }
     }
+
     TopAppBar(
         title = { Text("NumeroPitah") },
         navigationIcon = {
-            /*IconButton(onClick = onMenuToggle) {
-                Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")*/
-                    Log.d("Hello name ", currentRoute.toString())
-
             if (currentRoute != NavigationRoute.Home.route) {
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -147,25 +188,13 @@ fun AppTopBar(
                 IconButton(onClick = onMenuToggle) {
                     Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
                 }
-
-            }
-            DropdownMenu(
-                expanded = showMenu,
-                onDismissRequest = { onMenuToggle() },
-                modifier = Modifier
-                    .width(140.dp)
-                    .background(Color.DarkGray)
-            ) {
-
-                MenuItem("Home", navController, NavigationRoute.Home.route, onMenuToggle)
-                MenuItem("About Us", navController, NavigationRoute.About.route, onMenuToggle)
-                MenuItem("Contact Us", navController, NavigationRoute.Contact.route, onMenuToggle)
             }
         },
-                colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xFFB2EBF2) // Set the container color to light blue
-                )
+       /* colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(0xFFB2EBF2)
+        )*/
     )
 }
+
 
 
