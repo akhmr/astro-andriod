@@ -45,7 +45,7 @@ import java.util.Calendar
 fun InitUi(viewModel: AstroViewModel,navController: NavController) {
     // Temporary states for inputs
     val userName = remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf("Male") }
+    var gender by remember { mutableStateOf("MALE") }
     var selectedDate by remember { mutableStateOf("Select Date of Birth") }
 
     // Calendar initialization for date picker
@@ -83,7 +83,7 @@ fun InitUi(viewModel: AstroViewModel,navController: NavController) {
 
         SubmitButton (onClick = {
             coroutineScope.launch {
-                val user = User(userName.value, selectedDate)
+                val user = User(userName.value, selectedDate,gender)
                 try {
                     viewModel.fetchAstroData(user)
                     navController.navigate(NavigationRoute.AstroScreen.route)

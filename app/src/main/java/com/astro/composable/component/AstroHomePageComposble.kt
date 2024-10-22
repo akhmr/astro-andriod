@@ -36,10 +36,10 @@ fun GenderSelection(selectedGender: String, onGenderChange: (String) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text("Gender: ", modifier = Modifier.padding(end = 8.dp))
-        RadioButton(selected = selectedGender == "Male", onClick = { onGenderChange("Male") })
+        RadioButton(selected = selectedGender == "MALE", onClick = { onGenderChange("MALE") })
         Text("Male")
         Spacer(modifier = Modifier.width(8.dp))
-        RadioButton(selected = selectedGender == "Female", onClick = { onGenderChange("Female") })
+        RadioButton(selected = selectedGender == "FEMALE", onClick = { onGenderChange("FEMALE") })
         Text("Female")
     }
 }
