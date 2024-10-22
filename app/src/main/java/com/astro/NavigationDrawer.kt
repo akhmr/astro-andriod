@@ -3,9 +3,13 @@ package com.astro
 
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
@@ -30,8 +34,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -94,9 +101,11 @@ fun NavigationDrawerInitUI(navController: NavHostController,viewModel: AstroView
 
         drawerContent = {
             ModalDrawerSheet {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp).width(300.dp)
+                    .padding(NavigationDrawerItemDefaults.ItemPadding))
                 items.forEachIndexed { index, item ->
                     NavigationDrawerItem(
+                        modifier = Modifier.width(250.dp),
                         label = {
                             Text(text = item.title)
                         },
@@ -117,9 +126,6 @@ fun NavigationDrawerInitUI(navController: NavHostController,viewModel: AstroView
                                 contentDescription = item.title
                             )
                         },
-
-                        modifier = Modifier
-                            .padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
                 }
             }
@@ -167,4 +173,5 @@ fun NavigationDrawerInitUI(navController: NavHostController,viewModel: AstroView
     }
 
 }
+
 
